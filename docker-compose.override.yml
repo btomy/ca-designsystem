@@ -1,0 +1,42 @@
+version: "3"
+
+services:
+  cads:
+    volumes:
+      - .:/cads
+      - cads-node_modules:/cads/node_modules
+      - cads-jekyll:/cads/_site
+      - cads-sass_cache:/cads/.sass-cache
+    user: root
+    env_file:
+      - ./docker/dev.env
+
+  cads-website:
+    volumes:
+      - .:/cads
+      - cads-node_modules:/cads/node_modules
+      - cads-jekyll:/cads/_site
+      - cads-sass_cache:/cads/.sass-cache
+    user: root
+    env_file:
+      - ./docker/dev.env
+
+  cads-watch:
+    image: "cads${CADS_VERSION_TAG}"
+    container_name: cads-watch.test
+    labels:
+      - "traefik.enable=false"
+    command: yarn watchcss
+    volumes:
+      - .:/cads
+      - cads-node_modules:/cads/node_modules
+      - cads-jekyll:/cads/_site
+      - cads-sass_cache:/cads/.sass-cache
+    user: root
+    env_file:
+      - ./docker/dev.env
+
+volumes:
+  cads-node_modules: {}
+  cads-jekyll: {}
+  cads-sass_cache: {}

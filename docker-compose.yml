@@ -1,0 +1,37 @@
+version: "3"
+
+services:
+  cads:
+    build: .
+    image: "cads${CADS_VERSION_TAG}"
+    container_name: cads-shell.test
+    labels:
+      - "traefik.enable=false"
+    command: /bin/bash
+    env_file:
+      - ./docker/default.env
+
+  cads-website:
+    image: "cads${CADS_VERSION_TAG}"
+    container_name: cads-website.test
+    labels:
+      - "traefik.port=4000"
+      - "traefik.backend=cads-website"
+      - "traefik.frontend.rule=Host: cads-website.test"
+      - "traefik.enable=true"
+    command: bundle exec puma -p 4000
+    ports:
+      - "4000"
+    env_file:
+      - ./docker/default.env
+
+  cads-linkchecker:
+    image: citizensadvice/linkchecker
+    command: linkchecker http://cads-website.test:4000
+    links:
+      - cads-website
+
+networks:
+  default:
+    external:
+      name: cita

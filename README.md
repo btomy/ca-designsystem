@@ -162,46 +162,51 @@ $ git clone https://github.com/citizensadvice/cads.git
 
 Great you have the repository on your machine now.
 
-#### Step #2 (only needed to if you want to up[date the base image)
+#### Step #2
 
-`cd` into the `cads` directory (the `root`), and build the Docker image:
+You need to setup our shared services sub-project, we use this across different projects to offer a standard set of docker components.
 
-```shell
-$ make build
-```
+Follow the getting started steps in [shared services](docker/shared-services/README.md)
 
 #### Step #3
 
-Running the next command will start the Docker container and automatically attach to it.
-Remember to pass the output `pwd` command to this command so it know's where to look for your `cads` directory when sharing with the VM.
+To build the docker containers and start the local development environment run the following command:
 
 ```shell
-$ make start LOC=~/root/path/to/cads/directory
+$ bin/docker/reset
 ```
 
-#### Step #4
+Now if you open a browser window at [http://cads-website.test:3000](http://cads-website.test:3000) you should see the design system homepage.
 
-If the above was successful, you'll now be inside the VM and can install all dependencies required with the below:
+[Back to top](#citizens-advice-design-system)
+
+## Command line shell
+
+To run a command line shell in the project via docker, run the following command:
 
 ```shell
-$ yarn fresh
+$ bin/docker/run bash
 ```
 
-We run the documentation site on the [Jekyll](https://jekyllrb.com/) platform, but all that dependency management was handled with the above command
-
-### Start the docs site
-
-When all the above is complete, we can get the docs up and going by running:
+Other command line utilities can also be executed via that script:
 
 ```shell
-$ yarn start:website
+$ bin/docker/run ls -la
 ```
 
-This will start Jekyll and compile the stylesheets / scripts.
+## Linting and testing
 
-Now if you open a browser window at `http://localhost:4000` you should see the homepage.
+To launch the linting tool run:
+i
+```shell
+$ bin/docker/lint
+```
 
-We do have a few extra scripts that can be run when developing the framework and the documentation. Open up the `root` `package.json` to see these.
+We also have a link checker - this crawls the design system site to detect any broken links:
+
+```shell
+$ bin/docker/linkchecker
+```
 
 [Back to top](#citizens-advice-design-system)
 
@@ -212,8 +217,12 @@ Anybody and everybody is welcome to get involved in contributing to the framewor
 ### Process
 
 - Create a new branch making sure you adhere to the [git style guidelines](#Git-style-guidelines).
-- If you're fixing the `framework`, make sure to make `CSS` changes in the `packages/` directory as these are the framework source files.
-- If it's the website you're changing, make those updates in the `website/` directory.
+- If you're fixing the `framework`, make sure to make `CSS` changes in the `packages/` directory as these are the framework source files:
+
+```shell
+$ bin/docker/run yarn build:packages
+```
+
 - Next create a [pull request](https://github.com/btomy/ca-designsystem/pulls) where upon some discussion around the PR will happen.
 
 ### Publishing a version of the framework
@@ -283,7 +292,7 @@ You'll make many different types of change to the codebase over time but most ch
 
 | Issue type | Description                                                                   |
 | ---------- | ----------------------------------------------------------------------------- |
-| `feat`     | a new feature                                                                 |
+| `feature`  | a new feature                                                                 |
 | `fix`      | a bug fix                                                                     |
 | `docs`     | changes to documentation                                                      |
 | `style`    | formatting, missing semi colons, etc; no code change                          |
